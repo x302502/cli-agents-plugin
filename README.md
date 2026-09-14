@@ -4,6 +4,8 @@ Delegate heavy or long-running work from a Claude session to another AI coding-a
 installed on your machine, running headless (non-interactive) and returning a clean result
 to the main agent.
 
+**Repository:** https://github.com/x302502/cli-agents-plugin
+
 cli-agents is a **one-shot, Bash-only** delegation plugin (no app-server, no daemon).
 It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + prompt templates.
 
@@ -20,7 +22,10 @@ It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + promp
 
 ```text
 cli-agents-plugin/
-├── .claude-plugin/plugin.json
+├── .claude-plugin/
+│   ├── plugin.json                # plugin manifest
+│   └── marketplace.json           # marketplace manifest (/plugin marketplace add ...)
+├── .gitignore
 ├── agents/
 │   └── cli-delegate.md            # skills: [cli-headless, delegation-result]
 ├── commands/                      # /cli-agents:...
@@ -126,7 +131,17 @@ auto-approve + worktree isolation).
 Opus (you) → Haiku wrapper (cheap) → external CLI (headless) → results back
 ```
 
-The wrapper agent is lightweight Claude (Haiku). The external CLI does the real work.
+The wrapper agent is lightweight Claude. The external CLI does the real work.
+
+## Model
+
+`cli-delegate` runs on **`model: haiku`** by default — a cheap, fast orchestrator, while the
+real work runs in the external CLI. `haiku` is an alias, so it tracks the latest Haiku
+automatically.
+
+Override it if you want:
+- per agent: open `/agents` and change the model for `cli-agents:cli-delegate`;
+- globally: set the same model for all subagents in your Claude Code settings.
 
 Typical flow:
 
