@@ -168,30 +168,34 @@ done
 
 ## Install
 
-**Option A — Local dev (test without installing):**
+**From GitHub (recommended):**
+
+```text
+/plugin marketplace add x302502/cli-agents-plugin
+/plugin install cli-agents@cli-agents
+/reload-plugins
+/cli-agents:setup
+```
+
+The repository ships `.claude-plugin/marketplace.json`, so `/plugin marketplace add` can
+point straight at it.
+
+**Local dev (no install):**
 
 ```bash
 claude --plugin-dir ./cli-agents-plugin
 ```
 
-Use this when the plugin folder sits next to the project you are currently working on.
-
-**Option B — Install as user plugin:**
+**Clone + install from a path:**
 
 ```bash
-# In Claude Code session:
+git clone https://github.com/x302502/cli-agents-plugin
+# then, in Claude Code:
 /plugin install ./cli-agents-plugin
 ```
 
-Use this when you want the plugin available across projects.
-
-**Option C — Share via git (team marketplace):**
-
-```bash
-# Push to a git repo, then team members run:
-/plugin marketplace add your-org/your-marketplace-repo
-# Then install from /plugin menu
-```
+No npm install — the plugin is Bash + Markdown only. You just need at least one of the
+target CLIs installed (see Prerequisites).
 
 ## Usage
 
