@@ -1,0 +1,16 @@
+{
+  "description": "Optional one-shot review gate for cli-agents. DISABLED by default: the hook script exits 0 unless CLI_AGENTS_REVIEW_GATE=1 or ~/.claude/cli-agents/review-gate.on exists.",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/scripts/stop-review-gate.sh\"",
+            "timeout": 300
+          }
+        ]
+      }
+    ]
+  }
+}

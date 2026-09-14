@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CLI delegation report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cli", "status"],
+  "properties": {
+    "cli": { "type": "string", "minLength": 1 },
+    "task": { "type": "string" },
+    "command": { "type": "string" },
+    "status": { "type": "string", "enum": ["SUCCESS", "FAILED", "TIMEOUT", "PARTIAL"] },
+    "exit_code": { "type": "integer" },
+    "duration_sec": { "type": "number", "minimum": 0 },
+    "cost_usd": { "type": ["number", "null"] },
+    "artifacts": { "type": "array", "items": { "type": "string" } },
+    "raw_output": { "type": "string" },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "result": { "type": "string" }
+  }
+}
