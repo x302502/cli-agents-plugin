@@ -22,12 +22,23 @@ If no CLI is given, do NOT guess and do NOT delegate yet:
   `claude`, else `droid`, else any installed one.
 - Use the chosen CLI for the delegation.
 
-## 2. Resolve the task — ASK if it is missing
+## 2. Resolve the model — ASK (CLI default vs pick)
+
+If the user did not pass `--model <id>`, ask once with `AskUserQuestion`:
+- **Use the CLI's own default model (Recommended)** → do NOT pass any model flag; the CLI
+  keeps whatever model it is configured with.
+- **Pick a model** → read `skills/cli-headless/references/<cli>/models.md` and offer 2–4
+  options (fast / default / strongest) as choices, then pass the CLI's model flag
+  (`--model <id>` or `-m <id>`).
+
+Skip this question entirely when `--model` is already present.
+
+## 3. Resolve the task — ASK if it is missing
 
 If there is no task text after the CLI (or `$ARGUMENTS` is empty), use `AskUserQuestion`
 once to ask what the CLI should do. Never invent a task.
 
-## 3. Delegate
+## 4. Delegate
 
 Invoke the `cli-agents:cli-delegate` subagent via the `Agent` tool
 (`subagent_type: "cli-agents:cli-delegate"`), passing the resolved CLI + task and any flags.

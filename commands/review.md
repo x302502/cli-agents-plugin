@@ -14,7 +14,16 @@ If `$ARGUMENTS` has no `--cli <name>`, do NOT guess:
   with a sensible default first suffixed `(Recommended)`: prefer `codex`, else `claude`, else
   `droid`.
 
-## 2. Review
+## 2. Resolve the model — ASK (CLI default vs pick)
+
+If `$ARGUMENTS` has no `--model <id>`, ask once with `AskUserQuestion`:
+- **Use the CLI's own default model (Recommended)** → pass no model flag.
+- **Pick a model** → read `skills/cli-headless/references/<cli>/models.md` and offer 2–4
+  options (fast / default / strongest), then pass the CLI's model flag.
+
+Skip the question when `--model` is already present.
+
+## 3. Review
 
 Defaults:
 - Target: the working tree; with `--base <ref>`, review `<ref>...HEAD`.

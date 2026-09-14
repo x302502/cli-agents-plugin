@@ -80,14 +80,23 @@ choice over your own selection.
 2. Default to **read-only**. Only enable writes when the parent/user authorizes them, and
    prefer an isolated git worktree (the skill's Write-Mode Guardrails).
 3. Build the command from the skill's recipe for that CLI; always set a timeout with `TO`.
-4. Run it with `Bash` (also pass a Bash-tool timeout as a second net); redirect `stderr`.
+   If the parent did not pin a model, pass **no** model flag — the CLI keeps its own default.
+4. Run it with `Bash` (also pass a Bash-tool timeout as a second net) and capture the output to
+   a log file (e.g. append `2>&1 | tee /tmp/cli-agents-run.log`, keeping stderr).
 5. Parse exit code + payload per the skill; extract the result with the documented `jq`.
-6. Return the `## CLI delegation report` + cleaned result to the main agent.
+6. **On any non-OK run, classify before reporting:** run
+   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-run.sh" <log> <exit-code>` and use its `TYPE`
+   (TIMEOUT / AUTH / CLI_MISSING / RATE_LIMIT / BAD_FLAGS / CONTEXT_OVERFLOW / PERMISSION /
+   NONZERO_EXIT / EMPTY_OUTPUT) — see the skill's *Failure classification*.
+7. Return the `## CLI delegation report` (put the classification in **Warnings**) plus the
+   cleaned result to the main agent.
 
 ## Stop Conditions
 
 - CLI missing and no acceptable alternative → report the failure; do NOT solve the task
   yourself (you are Haiku, not suited for deep work).
-- Timeout / failure → report `TIMEOUT` or `FAILED` with a recommendation (narrow scope,
-  raise the cap, or pick another CLI). Retry at most once with a higher timeout.
+- Timeout / failure → report `TIMEOUT` or `FAILED` **with the `check-run.sh` classification**.
+  Retry at most once. On `CLI_MISSING` / `AUTH` / `RATE_LIMIT`, switch CLI instead of retrying.
+- If the CLI is installed but repeatedly fails, try **one** alternative CLI from the matrix; if
+  that also fails, return the failure + classification and stop.
 - Never push to `main` or force-push. Never run destructive commands.

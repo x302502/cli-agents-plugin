@@ -54,8 +54,35 @@ Always answer with this block, then the delegated result beneath it:
 | `command not found` | CLI not installed | report "CLI not available" and suggest an alternative from the matrix |
 | budget/turn cap hit | task too large | report and suggest a higher cap or splitting the task |
 
+## Failure classification (run on every non-OK run)
+
+Always capture the run to a log file, then classify it **before** reporting:
+
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-run.sh" <log-file> <exit-code>
+```
+
+| TYPE | Meaning | Action |
+|---|---|---|
+| `OK` | success | parse the output |
+| `TIMEOUT` (124) | too slow / too big | narrow scope, raise timeout, or use a faster CLI |
+| `CLI_MISSING` (127) | binary not installed | pick another CLI or install it |
+| `AUTH` | not logged in / bad key | authenticate (`codex login`, `agent login`, run once interactively) |
+| `RATE_LIMIT` | 429 / quota | back off, retry later, or switch CLI/model |
+| `BAD_FLAGS` | wrong/invalid flag | re-check the recipe against `<cli> --help` |
+| `CONTEXT_OVERFLOW` | input too large | scope the input (fewer files, tail logs) |
+| `PERMISSION` | sandbox / approval blocked | add the missing auto-approve flag (or `--trust`) |
+| `NONZERO_EXIT` | generic failure | inspect the log tail; retry once, then switch CLI |
+| `EMPTY_OUTPUT` | no output | narrow the prompt or switch CLI |
+
+Rules:
+- Put the `TYPE` in the report's **Warnings** and set **Status** to `FAILED` / `TIMEOUT`.
+- Retry **at most once** (raise the timeout on `TIMEOUT`; add the flag on `PERMISSION`).
+- On `CLI_MISSING` / `AUTH` / `RATE_LIMIT`, **switch CLI** instead of retrying.
+- Never invent a result to hide a failure.
+
 **If the chosen CLI is unavailable or repeatedly fails:** do NOT attempt to solve the task
-yourself (you are Haiku, not suited for deep work). Pick another CLI from the matrix that
-is installed, or return the failure to the parent with a clear recommendation.
+yourself (you are Haiku, not suited for deep work). Pick another installed CLI, or return the
+failure plus its classification to the parent.
 
 ---
