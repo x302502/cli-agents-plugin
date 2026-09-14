@@ -6,18 +6,6 @@ to the main agent.
 
 **Repository:** https://github.com/x302502/cli-agents-plugin
 
-## Quick install
-
-```text
-/plugin marketplace add x302502/cli-agents-plugin
-/plugin install cli-agents@cli-agents
-/reload-plugins
-/cli-agents:setup
-```
-
-That is the whole install — no npm, no build. `/cli-agents:setup` lists which CLIs are ready.
-Full options (local dev, clone) are in [Install](#install) below.
-
 cli-agents is a **one-shot, Bash-only** delegation plugin (no app-server, no daemon).
 It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + prompt templates.
 
@@ -29,6 +17,18 @@ It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + promp
   `references/` library (per-CLI folders + params mapping, job control, guardrails, parsing).
 - **`delegation-result`** (skill, internal) — presentation + safety contract: verbatim
   output, evidence boundaries, and the no-auto-fix rule.
+
+## Quick install
+
+```text
+/plugin marketplace add x302502/cli-agents-plugin
+/plugin install cli-agents@cli-agents
+/reload-plugins
+/cli-agents:setup
+```
+
+That is the whole install — no npm, no build. `/cli-agents:setup` lists which CLIs are ready.
+Full options (local dev, clone) are in [Install](#install) below.
 
 ## Plugin structure
 
