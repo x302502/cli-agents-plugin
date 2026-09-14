@@ -209,6 +209,13 @@ git clone https://github.com/x302502/cli-agents-plugin
 No npm install — the plugin is Bash + Markdown only. You just need at least one of the
 target CLIs installed (see Prerequisites).
 
+**Update later** — the marketplace name is `cli-agents` (not the repo slug):
+
+```text
+/plugin marketplace update cli-agents
+/reload-plugins
+```
+
 ## Usage
 
 In your Claude Code session (Opus):
