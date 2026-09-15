@@ -35,13 +35,7 @@ Some CLIs can continue a previous run, which saves tokens on follow-ups:
 | `codex` | `codex exec resume <session-id> "<prompt>"` (or `--last`) |
 | `agy` | `-c` / `--continue`, `--conversation <id>` |
 | `pi` | `-c` / `--continue`, `-r` / `--resume` |
-| `omp` | `-c` / `--continue` (pi-style) |
 | `grok` | `-c` / `--continue` |
-| `command-code` | `-r` / `--resume`, `-c` / `--continue`, `--fork-session` |
-| `droid` | `-r` / `--resume [id]`, `--fork <id>` |
 | `cline` | `--id <session-id>` |
-| `amp` | `amp threads continue` |
-| `copilot` | `--resume` |
-| `claude` | `--continue` / `--resume <id>` (verify with `claude --help`) |
 
 For CLIs not listed, check `<cli> --help` for a continue/resume/session flag.

@@ -1,6 +1,6 @@
 ---
 name: cli-headless
-description: Internal invocation contract for delegating a coding, review, refactor, or analysis task to any installed headless coding-agent CLI (claude, codex, agy, grok, copilot, pi, omp, opencode, mimo, amp, kilo, cline, command-code, cursor-agent, droid) with 4-pillar guardrails, timeouts, and structured output. Preloaded by the cli-agents:cli-delegate subagent.
+description: Internal invocation contract for delegating a coding, review, refactor, or analysis task to any installed headless coding-agent CLI (codex, agy, grok, pi, opencode, cline) with 4-pillar guardrails, timeouts, and structured output. Preloaded by the cli-agents:cli-delegate subagent.
 user-invocable: false
 ---
 
@@ -40,12 +40,11 @@ Keep this file lean. The detail lives in `references/` and is read on demand:
 
 | Task shape | CLI |
 |---|---|
-| Strongest reasoning / cross-file correctness | `claude`, `droid`, `codex` |
-| Fast, cheap read-only review / docs / micro-fix | `pi`, `amp`, `cline` |
+| Strongest sandboxed reasoning | `codex` |
 | Huge-context scan (1M+) | `agy` |
-| Sandboxed file work | `codex -s workspace-write`, `cursor-agent --sandbox enabled` |
-| Isolated git worktree (writes) | `command-code -w`, `cursor-agent -w`, `grok -w`, `droid -w` |
-| Multi-agent validation | `droid exec --mission`, `omp --plan-yolo` |
+| Fast, cheap read-only review / docs / micro-fix | `pi`, `cline` |
+| Sandboxed file work | `codex -s workspace-write` |
+| Isolated git worktree (writes) | `grok -w` |
 | Second opinion from another vendor | any CLI from a different family than the host |
 
 ## Portable Timeout Helper (macOS has no `timeout` by default)

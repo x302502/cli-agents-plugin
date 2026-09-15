@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Report which delegable CLI agents are installed on this machine.
 set -uo pipefail
-clis="agy amp claude cline codex command-code copilot cursor-agent droid grok kilo mimo omp opencode pi"
+clis="agy cline codex grok opencode pi"
 printf '%-14s %-10s %s\n' CLI INSTALLED PATH
 printf '%-14s %-10s %s\n' ---- --------- ----
 for c in $clis; do

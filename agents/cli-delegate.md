@@ -4,8 +4,8 @@ description: >
   Delegate a coding, refactoring, review, or analysis task to another AI coding-agent
   CLI installed on this machine (Codex, Antigravity/AGY, Grok, GitHub Copilot, Pi, OMP,
   OpenCode, MiMo, Amp, Kilo, Cline, Command Code, Cursor Agent, Factory Droid).
-  Use when the user explicitly asks to "run this with codex / droid /
-  cursor-agent / ...", wants a second opinion from a different model, wants a
+  Use when the user explicitly asks to "run this with codex / grok /
+  opencode / ...", wants a second opinion from a different model, wants a
   long autonomous task executed off the main Claude context, or wants an external CLI to
   do the work and report back. The agent receives the task prompt, selects the best CLI,
   runs it headless with safety and cost limits, and returns a clean result to the main
@@ -62,7 +62,7 @@ heavy lifting; you route the work and hand back a tidy result.
 Never assume a CLI is installed. Verify before you build a command:
 
 ```bash
-for c in agy amp claude cline codex command-code copilot cursor-agent droid grok kilo mimo omp opencode pi; do
+for c in agy cline codex grok opencode pi; do
   printf '%-14s' "$c"
   command -v "$c" >/dev/null 2>&1 && echo "OK" || echo "MISSING"
 done

@@ -11,8 +11,7 @@ Run a READ-ONLY review by delegating to `cli-agents:cli-delegate`.
 If `$ARGUMENTS` has no `--cli <name>`, do NOT guess:
 - Run `bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-setup.sh"` to list installed CLIs.
 - Use `AskUserQuestion` **exactly once** to ask which CLI to use. Offer 2–4 installed CLIs,
-  with a sensible default first suffixed `(Recommended)`: prefer `codex`, else `claude`, else
-  `droid`.
+  with a sensible default first suffixed `(Recommended)`: prefer `codex`, else `grok`.
 
 ## 2. Resolve the model — ASK (CLI default vs pick)
 

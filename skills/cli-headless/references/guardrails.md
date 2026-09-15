@@ -13,9 +13,9 @@ call per CLI). Always include output instructions so the CLI returns something p
    severity, fix"* or *"Return JSON matching the provided schema; add no prose."*
 
 Scope the input. Prefer file references over dumping the whole repo:
-- Single file: `claude -p "review @./src/x.ts"`, `pi -p @tsconfig.json "check strict flags"`.
+- Single file: `pi -p @tsconfig.json "check strict flags"`, `agy -p "review @./src/x.ts"`.
 - Many files: `find src -name '*.ts' | grep -v node_modules | head -80 | xargs cat | <cli>`.
-- Long logs/stack traces: pipe via stdin (`codex exec -`, `amp < prompt.txt`).
+- Long logs/stack traces: pipe via stdin (`codex exec -`).
 
 For write tasks, tell the CLI to run the project's tests/verification after editing, and to
 report the exact files it changed.
@@ -30,8 +30,7 @@ report the exact files it changed.
    explicitly. Always deny `rm *`, `sudo *`, `docker *`, `git push --force*`, `cat *.env*`,
    `mcp__*` (as supported). Auto-approve only what the task needs.
 3. **Economics & Limits:** always set a timeout (`TO <secs>`) and, where supported,
-   `--max-budget-usd` (claude), `--max-turns` (claude, grok, command-code), `--timeout`
-   (cline). Keep default budget <= $1.50 and turns <= 20.
+   `--max-turns` (grok), `--timeout` (cline). Keep default budget <= $1.50 and turns <= 20.
 4. **Structured I/O:** prefer `json` / `stream-json` / `--output-format json` / `--json`
    over free text, and always check **both** the exit code and the parsed payload.
 
@@ -39,7 +38,7 @@ report the exact files it changed.
 
 - **Default to read-only.** Only enable edits when the parent/user explicitly authorizes them.
 - Prefer running write tasks in an **isolated git worktree** via the CLI's own flag
-  (`droid -w`, `cursor-agent -w`, `command-code -w`, `grok -w`) when available.
+  (`grok -w`) when available.
 - Never allow a delegated CLI to push to `main` or force-push.
 - Record the working tree before/after so you can report what changed:
 

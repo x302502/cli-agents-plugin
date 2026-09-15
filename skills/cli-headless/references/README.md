@@ -9,21 +9,16 @@ Each CLI has its own folder, `references/<binary>/`, containing:
 
 | Binary | Folder | Headless | Best for |
 |---|---|---|---|
-| `claude` | `claude/` | `claude -p` | strongest reasoning; sandbox + budget + schema |
 | `codex` | `codex/` | `codex exec` | sandboxed OpenAI; JSONL; PR review |
 | `agy` | `agy/` | `agy -p` | 1M+ context; Gemini successor |
 | `grok` | `grok/` | `grok -p` | xAI; streaming-json; json-schema |
-| `copilot` | `copilot/` | `copilot -p` | GitHub-centric flows; usage telemetry |
 | `pi` | `pi/` | `pi -p` | fastest startup; micro-tasks; RPC |
-| `omp` | `omp/` | `omp -p` | Rust core; LSP; plan→execute |
 | `opencode` | `opencode/` | `opencode run` | client/server; ACP |
-| `kilo` | `kilo/` | `kilo run` | cloud/local worker; server |
-| `mimo` | `mimo/` | `mimo run` | Xiaomi token plan; server; PR |
-| `amp` | `amp/` | `amp -x` | Claude-Code-compatible stream-json |
 | `cline` | `cline/` | `cline "<p>"` | headless by default; retries/timeout |
-| `command-code` | `command-code/` | `command-code -p` | taste learning; worktree; `exit 8` cap |
-| `cursor-agent` | `cursor-agent/` | `cursor-agent -p` | Cursor models; sandbox; worktree |
-| `droid` | `droid/` | `droid exec` | multi-agent mission; autonomy tiers |
+
+> More CLIs (claude, amp, copilot, droid, kilo, mimo, omp, command-code, cursor-agent) are
+> planned — they will be re-added one at a time as each passes a live smoke test. See the
+> plugin README ("Roadmap").
 
 ## Cross-CLI files
 

@@ -10,9 +10,9 @@ cli-agents is a **one-shot, Bash-only** delegation plugin (no app-server, no dae
 It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + prompt templates.
 
 - **`cli-delegate`** (agent) — thin orchestrator. Preloads the `cli-headless` and
-  `delegation-result` skills; routes a task to any installed CLI among `agy`, `amp`,
-  `claude`, `cline`, `codex`, `command-code`, `copilot`, `cursor-agent`, `droid`,
-  `grok`, `kilo`, `mimo`, `omp`, `opencode`, `pi`; returns a structured report to main.
+  `delegation-result` skills; routes a task to any installed CLI among `agy`, `cline`,
+  `codex`, `grok`, `opencode`, `pi` (more planned — see [Roadmap](#roadmap));
+  returns a structured report to main.
 - **`cli-headless`** (skill, internal) — the invocation contract: a lean `SKILL.md` plus a
   `references/` library (per-CLI folders + params mapping, job control, guardrails, parsing).
 - **`delegation-result`** (skill, internal) — presentation + safety contract: verbatim
@@ -170,7 +170,7 @@ Typical flow:
 `cli-delegate` uses whichever of these are installed — check with `command -v <name>`:
 
 ```bash
-for c in claude codex agy grok copilot pi omp opencode mimo amp kilo cline command-code cursor-agent droid; do
+for c in agy cline codex grok opencode pi; do
   printf '%-14s' "$c"; command -v "$c" >/dev/null 2>&1 && echo OK || echo MISSING
 done
 ```
@@ -222,8 +222,8 @@ In your Claude Code session (Opus):
 
 ```text
 > Use cli-delegate to run codex on src/payments and report race conditions
-> Use cli-delegate to have droid refactor the auth module and run the tests
-> Use cli-delegate to ask cursor-agent for a second opinion on the last commit
+> Use cli-delegate to have grok refactor the auth module and run the tests
+> Use cli-delegate to ask agy for a second opinion on the last commit
 ```
 
 Or just describe the task — Claude auto-delegates when it matches an agent description.
@@ -234,12 +234,11 @@ The user's explicit choice always wins. Otherwise `cli-delegate` picks by task s
 
 | Task | Suggested CLI |
 | --- | --- |
-| Strongest reasoning / cross-file correctness | `claude`, `droid`, `codex` |
-| Fast, cheap, read-only review / docs / micro-fix | `pi`, `amp`, `cline` |
-| Autonomous repo work + multi-agent validation | `droid exec --mission`, `omp --plan-yolo` |
+| Strongest sandboxed reasoning | `codex` |
+| Fast, cheap, read-only review / docs / micro-fix | `pi`, `cline` |
 | Huge-context scan (1M+) | `agy` |
-| Sandboxed file work | `codex -s workspace-write`, `cursor-agent --sandbox enabled` |
-| Isolated git worktree | `command-code -w`, `cursor-agent -w`, `grok -w`, `droid -w` |
+| Sandboxed file work | `codex -s workspace-write` |
+| Isolated git worktree | `grok -w` |
 | Second opinion from another vendor | any CLI from a different family than the host |
 
 ## Example prompts
@@ -252,20 +251,20 @@ Review src/payments for race conditions and return a table: file, risk, severity
 ```
 
 ```text
-Use cli-delegate to have droid execute: refactor the auth module from callbacks to
-async/await, run npm test, fix failures. Autonomy medium, JSON output.
+Use cli-delegate to have grok refactor the auth module from callbacks to
+async/await, run npm test, fix failures. JSON output.
 ```
 
 ```text
-Use cli-delegate to ask cursor-agent for a second opinion on the changes in the last commit.
-Read-only (--plan), JSON output.
+Use cli-delegate to ask agy for a second opinion on the changes in the last commit.
+Read-only (--mode plan), JSON output.
 ```
 
 ### Delegate a long autonomous task (writes)
 
 ```text
-Use cli-delegate to run command-code in an isolated worktree to fix the failing
-test suite in src/. Auto-accept, no-session, max-turns 20.
+Use cli-delegate to run cline to fix the failing test suite in src/.
+Run npm test when done and report results. JSON output.
 ```
 
 ### Let the agent choose the CLI
@@ -312,21 +311,35 @@ worktree, and never pushes to `main`.
 
 | Binary | Headless invocation | Auto-approve | Structured output |
 | --- | --- | --- | --- |
-| `claude` | `claude -p` | `--permission-mode dontAsk` | `--output-format json` / `--json-schema` |
 | `codex` | `codex exec` | `--dangerously-bypass-approvals-and-sandbox` | `--json` / `--output-schema` |
 | `agy` | `agy -p` | `--dangerously-skip-permissions` | `--output-format json` / `--json-schema` |
 | `grok` | `grok -p` | `--permission-mode dontAsk` | `--output-format json` / `--json-schema` |
-| `copilot` | `copilot -p` | `--allow-all-tools` / `--yolo` | `--output-format json` |
 | `pi` | `pi -p` | auto in `-p` | `--mode json` |
-| `omp` | `omp -p` | `--plan-yolo` | `--mode json` |
 | `opencode` | `opencode run` | `--auto` | `--format json` |
-| `mimo` | `mimo run` | `--never-ask --trust` | `--format json` |
-| `amp` | `amp -x` | `--dangerously-skip-permissions` | `--stream-json` |
-| `kilo` | `kilo run` | `--auto` | `--format json` |
 | `cline` | `cline "<prompt>"` | on by default | `--json` |
-| `command-code` | `command-code -p` | `--auto-accept` | `--output-format json` |
-| `cursor-agent` | `cursor-agent -p` | `--force` / `--yolo` | `--output-format json` |
-| `droid` | `droid exec` | `--auto low\|medium\|high` | `--output-format json` |
+
+## Roadmap
+
+The plugin ships with the **6 CLIs that passed a live smoke test** on the reference machine
+(prompt *"Reply with exactly: OK"*, read-only recipe, exit 0, output verified):
+`codex` (8s) · `cline` (4s) · `grok` (6s) · `pi` (7s) · `opencode` (7s) · `agy` (37s).
+
+More CLIs will be re-added **one at a time**, each only after it passes the same smoke test:
+
+| CLI | Status | Note |
+| --- | --- | --- |
+| `claude` | next up | already passed smoke (6s) in an earlier run — re-add first |
+| `amp`, `copilot`, `droid`, `kilo`, `mimo`, `omp`, `command-code`, `cursor-agent` | planned | reference data recoverable from git history |
+
+**Restoring removed reference data:** every removed per-CLI folder (`README.md` + `models.md`)
+is preserved in git history. Restore all of them with:
+
+```bash
+# find the trim commit, then revert it (or restore single folders from its parent):
+HASH=$(git log --oneline --grep='trim to 6 smoke-tested' | cut -d' ' -f1)
+git revert "$HASH"                                                 # restore everything
+git checkout "$HASH"~1 -- skills/cli-headless/references/<cli>/    # or one folder only
+```
 
 ## Limits
 
@@ -339,7 +352,7 @@ worktree, and never pushes to `main`.
 If the plugin does not work as expected:
 
 1. Check the CLI is installed: `command -v <name>` (e.g. `command -v codex`).
-2. Run the CLI once manually to complete authentication (e.g. `codex`, `droid`).
+2. Run the CLI once manually to complete authentication (e.g. `codex`, `agy`).
 3. Confirm the plugin path points to the folder containing `.claude-plugin/plugin.json`.
 4. Retry with a narrower request if the run times out.
 5. If a delegated CLI reports a permission prompt, add its auto-approve flag (see the table).

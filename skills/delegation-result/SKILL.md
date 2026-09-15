@@ -17,7 +17,7 @@ When a delegated CLI returns output, present it like this.
 - If there are no findings, say so explicitly.
 - If the CLI edited files, say so and list the touched files (from the report's Artifacts).
 - Surface the exit code, and name the cause of any limit hit (`124` = timeout, `8` =
-  command-code turn cap, `130` = cancelled).
+  (`130` = cancelled).
 
 ## Hard rules
 

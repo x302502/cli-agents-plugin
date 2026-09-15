@@ -2,19 +2,17 @@
 
 ## Output Handling & Parsing
 
-1. **Check the exit code first.** `124` = timeout; `8` (command-code) = turn cap hit;
-   non-zero = failure. If stderr was suppressed and the run failed, re-run capturing
-   `2>&1 | tail -30` for diagnosis.
+1. **Check the exit code first.** `124` = timeout; non-zero = failure. If stderr was
+   suppressed and the run failed, re-run capturing `2>&1 | tail -30` for diagnosis.
 2. **Parse structured output** with `jq` (available at `/usr/bin/jq`):
-   - claude: `jq -r '.result // .structured_output'`
    - codex: the `--json` stream ends with `item.completed` (`agent_message.text`); `-o <file>`
      holds just the final message.
-   - amp: `jq -r 'select(.type=="assistant") | .message.content[]? | select(.type=="text") | .text'`
-   - copilot: parse the JSONL stream; read the `--usage-output-file` for token stats.
-   - pi / omp: NDJSON event stream — take the last assistant text:
+   - pi: NDJSON event stream — take the last assistant text:
      `jq -r 'select(.type=="message_end" and .message.role=="assistant") | .message.content[]? | select(.type=="text") | .text'`
      (pi's final `agent_settled` event carries no text).
-   - opencode / kilo / mimo: tail the `session_complete` / result event line.
+   - opencode: tail the `session_complete` / result event line.
+   - agy / grok / cline: parse the `--output-format json` / `--json` payload with `jq`;
+     for free text, read the rendered message directly.
 3. **De-duplicate noise.** If a CLI leaks loading/banner text, strip it. Save the raw log
    to a temp file and reference it instead of pasting everything.
 4. **Summarize for the parent.** If the parent wanted a short answer, extract the key
