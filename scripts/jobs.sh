@@ -40,6 +40,9 @@ cmd_start() {
   if [ "$#" -eq 1 ]; then cmd="$1"; else cmd="$*"; printf 'jobs.sh: WARNING: got %s args; joined with spaces. Pass ONE quoted string to preserve quoting.\n' "$#" >&2; fi
   printf '%s\n' "$cmd" > "$dir/cmd"
   printf '%s\n' "$cwd" > "$dir/cwd"
+  # Snapshot the calling session's PATH: it is the environment where the user's CLIs
+  # are known to work (e.g. the node version a CLI wrapper resolves via #!/usr/bin/env).
+  printf '%s\n' "$PATH" > "$dir/path"
   printf '%s\n' "$(now)" > "$dir/started"
   printf 'running\n' > "$dir/status"
   # Put the job in its own process group (setsid) when available, so cancel can signal the

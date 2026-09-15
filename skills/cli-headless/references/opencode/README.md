@@ -33,6 +33,12 @@ TO 150 opencode run "<PROMPT>" \
 
 - Server model: `opencode serve --port 4096 --hostname 0.0.0.0` then `--attach`.
 - `opencode pr <number>` fetches a PR branch, works, and commits back.
+- ⚠️ **Provider dependency:** if `opencode.json` points at a local gateway
+  (e.g. `http://127.0.0.1:23333/v1` — cherry-gateway), one-shot runs fail with
+  `APIError: Cannot connect to API` when that server is down. Verify with
+  `curl -m 3 http://127.0.0.1:23333/` and start the gateway first, or switch the
+  provider in `opencode.json` to a hosted one. Classified as `NONZERO_EXIT` by
+  `check-run.sh`.
 
 
 ## Recommended models
