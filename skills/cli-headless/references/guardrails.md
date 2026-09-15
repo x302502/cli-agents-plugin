@@ -13,7 +13,7 @@ call per CLI). Always include output instructions so the CLI returns something p
    severity, fix"* or *"Return JSON matching the provided schema; add no prose."*
 
 Scope the input. Prefer file references over dumping the whole repo:
-- Single file: `pi -p @tsconfig.json "check strict flags"`, `agy -p "review @./src/x.ts"`.
+- Single file: `claude -p "review @./src/x.ts"`, `pi -p @tsconfig.json "check strict flags"`.
 - Many files: `find src -name '*.ts' | grep -v node_modules | head -80 | xargs cat | <cli>`.
 - Long logs/stack traces: pipe via stdin (`codex exec -`).
 
@@ -30,7 +30,8 @@ report the exact files it changed.
    explicitly. Always deny `rm *`, `sudo *`, `docker *`, `git push --force*`, `cat *.env*`,
    `mcp__*` (as supported). Auto-approve only what the task needs.
 3. **Economics & Limits:** always set a timeout (`TO <secs>`) and, where supported,
-   `--max-turns` (grok), `--timeout` (cline). Keep default budget <= $1.50 and turns <= 20.
+   `--max-budget-usd` (claude), `--max-turns` (claude, grok), `--timeout`
+   (cline). Keep default budget <= $1.50 and turns <= 20.
 4. **Structured I/O:** prefer `json` / `stream-json` / `--output-format json` / `--json`
    over free text, and always check **both** the exit code and the parsed payload.
 

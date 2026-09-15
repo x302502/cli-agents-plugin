@@ -22,9 +22,9 @@ TO 180 agy -p "Generate module docs for every file under src/services. Return ma
 TO 90 pi -p "Add a missing PORT validation in src/config.ts and update README." --mode json --no-session --tools read,edit,write 2>/dev/null
 ```
 
-**E. Full-repo security audit (read-only, structured):**
+**E. Full-repo security audit with the strongest reasoning:**
 ```bash
-TO 200 codex exec "Audit this repo for injection, secrets, and missing authz. Return JSON: {findings:[{file,line,severity,issue,fix}]}." --sandbox read-only --ephemeral --skip-git-repo-check --json -o /tmp/audit.txt 2>/dev/null
+TO 200 claude -p "Audit this repo for injection, secrets, and missing authz. Return JSON: {findings:[{file,line,severity,issue,fix}]}" --permission-mode dontAsk --allowedTools "Read" "Grep" "Glob" --max-budget-usd 1.50 --max-turns 20 --no-session-persistence --output-format json 2>/dev/null
 ```
 
 **F. Autonomous test-writing pass (write):**

@@ -1,6 +1,6 @@
 ---
 name: cli-headless
-description: Internal invocation contract for delegating a coding, review, refactor, or analysis task to any installed headless coding-agent CLI (codex, agy, grok, pi, opencode, cline) with 4-pillar guardrails, timeouts, and structured output. Preloaded by the cli-agents:cli-delegate subagent.
+description: Internal invocation contract for delegating a coding, review, refactor, or analysis task to any installed headless coding-agent CLI (claude, codex, agy, grok, pi, opencode, cline) with 4-pillar guardrails, timeouts, and structured output. Preloaded by the cli-agents:cli-delegate subagent.
 user-invocable: false
 ---
 
@@ -40,7 +40,7 @@ Keep this file lean. The detail lives in `references/` and is read on demand:
 
 | Task shape | CLI |
 |---|---|
-| Strongest sandboxed reasoning | `codex` |
+| Strongest reasoning / cross-file correctness | `claude`, `codex` |
 | Huge-context scan (1M+) | `agy` |
 | Fast, cheap read-only review / docs / micro-fix | `pi`, `cline` |
 | Sandboxed file work | `codex -s workspace-write` |

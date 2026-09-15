@@ -33,6 +33,7 @@ Some CLIs can continue a previous run, which saves tokens on follow-ups:
 | CLI | Resume / continue |
 |---|---|
 | `codex` | `codex exec resume <session-id> "<prompt>"` (or `--last`) |
+| `claude` | `--continue` / `--resume <id>` (verify with `claude --help`) |
 | `agy` | `-c` / `--continue`, `--conversation <id>` |
 | `pi` | `-c` / `--continue`, `-r` / `--resume` |
 | `grok` | `-c` / `--continue` |

@@ -5,6 +5,7 @@
 1. **Check the exit code first.** `124` = timeout; non-zero = failure. If stderr was
    suppressed and the run failed, re-run capturing `2>&1 | tail -30` for diagnosis.
 2. **Parse structured output** with `jq` (available at `/usr/bin/jq`):
+   - claude: `jq -r '.result // .structured_output'`
    - codex: the `--json` stream ends with `item.completed` (`agent_message.text`); `-o <file>`
      holds just the final message.
    - pi: NDJSON event stream — take the last assistant text:

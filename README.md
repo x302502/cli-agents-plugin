@@ -10,7 +10,7 @@ cli-agents is a **one-shot, Bash-only** delegation plugin (no app-server, no dae
 It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + prompt templates.
 
 - **`cli-delegate`** (agent) — thin orchestrator. Preloads the `cli-headless` and
-  `delegation-result` skills; routes a task to any installed CLI among `agy`, `cline`,
+  `delegation-result` skills; routes a task to any installed CLI among `agy`, `claude`, `cline`,
   `codex`, `grok`, `opencode`, `pi` (more planned — see [Roadmap](#roadmap));
   returns a structured report to main.
 - **`cli-headless`** (skill, internal) — the invocation contract: a lean `SKILL.md` plus a
@@ -170,7 +170,7 @@ Typical flow:
 `cli-delegate` uses whichever of these are installed — check with `command -v <name>`:
 
 ```bash
-for c in agy cline codex grok opencode pi; do
+for c in agy claude cline codex grok opencode pi; do
   printf '%-14s' "$c"; command -v "$c" >/dev/null 2>&1 && echo OK || echo MISSING
 done
 ```
@@ -234,7 +234,7 @@ The user's explicit choice always wins. Otherwise `cli-delegate` picks by task s
 
 | Task | Suggested CLI |
 | --- | --- |
-| Strongest sandboxed reasoning | `codex` |
+| Strongest reasoning / cross-file correctness | `claude`, `codex` |
 | Fast, cheap, read-only review / docs / micro-fix | `pi`, `cline` |
 | Huge-context scan (1M+) | `agy` |
 | Sandboxed file work | `codex -s workspace-write` |
@@ -311,6 +311,7 @@ worktree, and never pushes to `main`.
 
 | Binary | Headless invocation | Auto-approve | Structured output |
 | --- | --- | --- | --- |
+| `claude` | `claude -p` | `--permission-mode dontAsk` | `--output-format json` / `--json-schema` |
 | `codex` | `codex exec` | `--dangerously-bypass-approvals-and-sandbox` | `--json` / `--output-schema` |
 | `agy` | `agy -p` | `--dangerously-skip-permissions` | `--output-format json` / `--json-schema` |
 | `grok` | `grok -p` | `--permission-mode dontAsk` | `--output-format json` / `--json-schema` |
@@ -320,15 +321,14 @@ worktree, and never pushes to `main`.
 
 ## Roadmap
 
-The plugin ships with the **6 CLIs that passed a live smoke test** on the reference machine
+The plugin ships with the **7 CLIs that passed a live smoke test** on the reference machine
 (prompt *"Reply with exactly: OK"*, read-only recipe, exit 0, output verified):
-`codex` (8s) · `cline` (4s) · `grok` (6s) · `pi` (7s) · `opencode` (7s) · `agy` (37s).
+`codex` (8s) · `claude` (5s) · `cline` (4s) · `grok` (6s) · `pi` (7s) · `opencode` (7s) · `agy` (37s).
 
 More CLIs will be re-added **one at a time**, each only after it passes the same smoke test:
 
 | CLI | Status | Note |
 | --- | --- | --- |
-| `claude` | next up | already passed smoke (6s) in an earlier run — re-add first |
 | `amp`, `copilot`, `droid`, `kilo`, `mimo`, `omp`, `command-code`, `cursor-agent` | planned | reference data recoverable from git history |
 
 **Restoring removed reference data:** every removed per-CLI folder (`README.md` + `models.md`)

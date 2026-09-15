@@ -12,14 +12,14 @@ $ARGUMENTS
 ## 1. Resolve the CLI — ASK if it is missing
 
 A CLI is "given" only if `$ARGUMENTS` starts with a known binary name
-(`agy|cline|codex|grok|opencode|pi`)
+(`agy|claude|cline|codex|grok|opencode|pi`)
 or contains `--cli <name>`.
 
 If no CLI is given, do NOT guess and do NOT delegate yet:
 - Run `bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-setup.sh"` to see which CLIs are installed.
 - Use `AskUserQuestion` **exactly once** to ask which CLI to use. Offer 2–4 installed CLIs as
   options, with a sensible default first, suffixed `(Recommended)`: prefer `codex`, else
-  `grok`, else any installed one.
+  `claude`, else `grok`, else any installed one.
 - Use the chosen CLI for the delegation.
 
 ## 2. Resolve the model — ASK (CLI default vs pick)

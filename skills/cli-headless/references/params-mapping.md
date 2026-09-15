@@ -2,13 +2,14 @@
 
 Translate a generic intent into the right flag for each CLI. Combine with the per-CLI folders
 (`references/<binary>/`, indexed in `references/README.md`). Values were verified against
-the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, `opencode`,
-`cline` (more planned — see the README roadmap).
+the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `grok`, `pi`,
+`opencode`, `cline` (more planned — see the README roadmap).
 
 ## 1. One-shot / non-interactive (required for every delegation)
 
 | CLI | Flag |
 |---|---|
+| `claude` | `-p`, `--print` |
 | `codex` | `codex exec` |
 | `agy` | `-p`, `--print` |
 | `grok` | `-p`, `--single` |
@@ -20,6 +21,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Flag | Notes |
 |---|---|---|
+| `claude` | `--permission-mode dontAsk` | `--dangerously-skip-permissions` only in isolated sandboxes |
 | `codex` | `--dangerously-bypass-approvals-and-sandbox` | or `-s workspace-write` with automatic review |
 | `agy` | `--dangerously-skip-permissions` | |
 | `grok` | `--permission-mode dontAsk` / `--always-approve` | |
@@ -31,6 +33,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Flag |
 |---|---|
+| `claude` | `--output-format json\|stream-json` |
 | `codex` | `--json` (+ `-o <file>`) |
 | `agy` | `--output-format json\|stream-json` |
 | `grok` | `--output-format json\|streaming-json` |
@@ -42,6 +45,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Flag |
 |---|---|
+| `claude` | `--json-schema <schema\|file>` |
 | `codex` | `--output-schema <file>` |
 | `agy` | `--json-schema <schema\|file>` |
 | `grok` | `--json-schema <schema>` (implies json) |
@@ -53,6 +57,8 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Flag | Meaning |
 |---|---|---|
+| `claude` | `--max-budget-usd <n>` | hard USD cap |
+| `claude` | `--max-turns <n>` | reasoning/tool turn cap |
 | `grok` | `--max-turns <n>` | turn cap |
 | `agy` | `--print-timeout <3m>` | print-mode timeout |
 | `cline` | `-t, --timeout <s>` | process timeout |
@@ -63,6 +69,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Flag |
 |---|---|
+| `claude` | `--no-session-persistence` |
 | `codex` | `--ephemeral` |
 | `pi` | `--no-session` |
 | `opencode` | auto (per UUID) |
@@ -74,6 +81,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Allow | Deny |
 |---|---|---|
+| `claude` | `--allowedTools "Read" "Grep" "Glob" "Edit" ...` | `--disallowedTools "Bash(rm *)" "Bash(sudo *)" "Bash(git push --force*)" "Bash(cat *.env*)" "mcp__*"` |
 | `codex` | `-s workspace-write` (policy) | `-s read-only` (policy) |
 | `pi` | `--tools read,grep,find,ls` | `--exclude-tools bash` |
 | `grok` | `--allow "RULE"` | `--deny "Bash(rm *)"` |
@@ -89,6 +97,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | CLI | Flag |
 |---|---|
+| `claude` | `--model` |
 | `codex` | `-m, --model` |
 | `agy` | `--model` |
 | `grok` | `-m, --model` |
@@ -107,7 +116,7 @@ the installed binaries' `--help`. Supported CLIs: `codex`, `agy`, `grok`, `pi`, 
 
 | Scenario | Preset |
 |---|---|
-| Read-only triage / review | `codex exec --sandbox read-only --json` (low `TO` timeout) |
+| Read-only triage / review | `codex exec --sandbox read-only --json` or `claude -p --permission-mode dontAsk` (low `TO` timeout) |
 | Second opinion (other vendor) | `grok -p --permission-mode dontAsk --output-format json` |
 | Huge-context scan | `agy -p --mode plan --output-format json` |
 | Fast micro-fix | `pi -p --mode json --no-session --tools read,edit,write` |
@@ -121,6 +130,7 @@ each `references/<binary>/models.md`.
 
 | CLI | Fast / cheap | Default | Strongest | List models with |
 |---|---|---|---|---|
+| `claude` | `haiku` | `sonnet` | `opus` | aliases in `claude --help` |
 | `codex` | `gpt-5.4-mini` | `gpt-5.4` | newest `gpt-5.6-*` / `gpt-6-*` | `-m` (`o3` also ok) |
 | `agy` | `...-flash` | mid `...-pro-*` | largest Pro + `--effort high` | `--model` |
 | `grok` | (unset) | account default | pinned model | `-m, --model` |

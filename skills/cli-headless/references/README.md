@@ -9,6 +9,7 @@ Each CLI has its own folder, `references/<binary>/`, containing:
 
 | Binary | Folder | Headless | Best for |
 |---|---|---|---|
+| `claude` | `claude/` | `claude -p` | strongest reasoning; sandbox + budget + schema |
 | `codex` | `codex/` | `codex exec` | sandboxed OpenAI; JSONL; PR review |
 | `agy` | `agy/` | `agy -p` | 1M+ context; Gemini successor |
 | `grok` | `grok/` | `grok -p` | xAI; streaming-json; json-schema |
@@ -16,7 +17,7 @@ Each CLI has its own folder, `references/<binary>/`, containing:
 | `opencode` | `opencode/` | `opencode run` | client/server; ACP |
 | `cline` | `cline/` | `cline "<p>"` | headless by default; retries/timeout |
 
-> More CLIs (claude, amp, copilot, droid, kilo, mimo, omp, command-code, cursor-agent) are
+> More CLIs (amp, copilot, droid, kilo, mimo, omp, command-code, cursor-agent) are
 > planned — they will be re-added one at a time as each passes a live smoke test. See the
 > plugin README ("Roadmap").
 
