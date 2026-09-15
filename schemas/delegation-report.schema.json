@@ -3,7 +3,19 @@
   "title": "CLI delegation report",
   "type": "object",
   "additionalProperties": false,
-  "required": ["cli", "status"],
+  "required": [
+    "cli",
+    "task",
+    "command",
+    "status",
+    "exit_code",
+    "duration_sec",
+    "cost_usd",
+    "artifacts",
+    "raw_output",
+    "warnings",
+    "result"
+  ],
   "properties": {
     "cli": { "type": "string", "minLength": 1 },
     "task": { "type": "string" },

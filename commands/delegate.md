@@ -12,7 +12,7 @@ $ARGUMENTS
 ## 1. Resolve the CLI — ASK if it is missing
 
 A CLI is "given" only if `$ARGUMENTS` starts with a known binary name
-(`claude|codex|agy|grok|copilot|pi|omp|opencode|mimo|amp|kilo|cline|command-code|cursor-agent|droid`)
+(`agy|amp|claude|cline|codex|command-code|copilot|cursor-agent|droid|grok|kilo|mimo|omp|opencode|pi`)
 or contains `--cli <name>`.
 
 If no CLI is given, do NOT guess and do NOT delegate yet:
@@ -37,6 +37,17 @@ Skip this question entirely when `--model` is already present.
 
 If there is no task text after the CLI (or `$ARGUMENTS` is empty), use `AskUserQuestion`
 once to ask what the CLI should do. Never invent a task.
+
+### Prompt template reuse
+
+If the task is clearly a **refactor** or a **triage/diagnosis** request, base the delegated
+prompt on the matching template — fill `{{TARGET_LABEL}}` (what to act on) and
+`{{USER_FOCUS}}` (the user's goal / symptom), then pass the filled template as the task text:
+
+- refactor → `prompts/refactor.md`
+- triage / root-cause → `prompts/triage.md`
+
+Otherwise pass the user's task text verbatim.
 
 ## 4. Delegate
 

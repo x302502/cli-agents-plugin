@@ -41,6 +41,13 @@ Always answer with this block, then the delegated result beneath it:
 <cleaned summary / structured output from the CLI>
 ```
 
+**Machine-readable twin:** `schemas/delegation-report.schema.json` (validate with
+`jq -e` or any JSON-Schema validator if needed). Field mapping for the block above:
+`CLI→cli`, `Task→task`, `Command→command`, `Status→status`, `Exit code→exit_code`,
+`Duration→duration_sec`, `Cost→cost_usd`, `Artifacts→artifacts`,
+`Raw output→raw_output`, `Warnings→warnings`, `Result→result`.
+Every field is required — use `"n/a"` when a value genuinely does not apply.
+
 ---
 
 ## Error Handling & Fallback

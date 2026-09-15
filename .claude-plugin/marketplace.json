@@ -11,7 +11,7 @@
     {
       "name": "cli-agents",
       "description": "Universal headless-CLI delegation plugin for Claude Code. Ships the cli-delegate subagent (cli-headless + delegation-result skills), slash commands (/cli-agents:setup, delegate, review, status, result, cancel, models), one-shot Bash job control, an opt-in Stop review gate, JSON schemas, and prompt templates.",
-      "version": "2.2.0",
+      "version": "2.2.1",
       "author": {
         "name": "Le Thanh"
       },

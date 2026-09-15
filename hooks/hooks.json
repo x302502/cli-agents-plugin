@@ -1,5 +1,5 @@
 {
-  "description": "Optional one-shot review gate for cli-agents. DISABLED by default: the hook script exits 0 unless CLI_AGENTS_REVIEW_GATE=1 or ~/.claude/cli-agents/review-gate.on exists.",
+  "description": "Optional one-shot review gate for cli-agents. DISABLED by default: the hook script exits 0 immediately unless CLI_AGENTS_REVIEW_GATE=1 or ~/.claude/cli-agents/review-gate.on exists. timeout=300 is intentional: when the gate IS enabled it runs a full one-shot CLI review, which can take minutes; the disabled path returns in milliseconds.",
   "hooks": {
     "Stop": [
       {

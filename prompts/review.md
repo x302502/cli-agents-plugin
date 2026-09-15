@@ -24,3 +24,7 @@ Use "needs-attention" if any material risk exists; "approve" only if none.
 Every finding must be defensible from the provided context. If a conclusion is an inference,
 say so and keep the confidence honest.
 </grounding_rules>
+
+<review_input>
+{{REVIEW_INPUT}}
+</review_input>

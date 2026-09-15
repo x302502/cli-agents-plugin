@@ -62,7 +62,7 @@ heavy lifting; you route the work and hand back a tidy result.
 Never assume a CLI is installed. Verify before you build a command:
 
 ```bash
-for c in claude codex agy pi omp opencode grok copilot mimo amp kilo cline command-code cursor-agent droid; do
+for c in agy amp claude cline codex command-code copilot cursor-agent droid grok kilo mimo omp opencode pi; do
   printf '%-14s' "$c"
   command -v "$c" >/dev/null 2>&1 && echo "OK" || echo "MISSING"
 done

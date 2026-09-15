@@ -10,9 +10,9 @@ cli-agents is a **one-shot, Bash-only** delegation plugin (no app-server, no dae
 It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + prompt templates.
 
 - **`cli-delegate`** (agent) — thin orchestrator. Preloads the `cli-headless` and
-  `delegation-result` skills; routes a task to any installed CLI among `claude`, `codex`,
-  `agy`, `grok`, `copilot`, `pi`, `omp`, `opencode`, `mimo`, `amp`, `kilo`,
-  `cline`, `command-code`, `cursor-agent`, `droid`; returns a structured report to main.
+  `delegation-result` skills; routes a task to any installed CLI among `agy`, `amp`,
+  `claude`, `cline`, `codex`, `command-code`, `copilot`, `cursor-agent`, `droid`,
+  `grok`, `kilo`, `mimo`, `omp`, `opencode`, `pi`; returns a structured report to main.
 - **`cli-headless`** (skill, internal) — the invocation contract: a lean `SKILL.md` plus a
   `references/` library (per-CLI folders + params mapping, job control, guardrails, parsing).
 - **`delegation-result`** (skill, internal) — presentation + safety contract: verbatim

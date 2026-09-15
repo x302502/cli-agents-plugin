@@ -37,12 +37,18 @@ cmd_start() {
   id="$(new_id)"; dir="$JOB_DIR/$id"; mkdir -p "$dir"
   # Contract: pass the command as ONE shell-quoted string. Multiple args are joined
   # with spaces (best effort) — always quote the whole command at the call site.
-  if [ "$#" -eq 1 ]; then cmd="$1"; else cmd="$*"; fi
+  if [ "$#" -eq 1 ]; then cmd="$1"; else cmd="$*"; printf 'jobs.sh: WARNING: got %s args; joined with spaces. Pass ONE quoted string to preserve quoting.\n' "$#" >&2; fi
   printf '%s\n' "$cmd" > "$dir/cmd"
   printf '%s\n' "$cwd" > "$dir/cwd"
   printf '%s\n' "$(now)" > "$dir/started"
   printf 'running\n' > "$dir/status"
-  nohup bash "$SELF_DIR/job-runner.sh" "$dir" >/dev/null 2>&1 &
+  # Put the job in its own process group (setsid) when available, so cancel can signal the
+  # whole group; otherwise jobs.sh falls back to walking the descendant tree.
+  if command -v setsid >/dev/null 2>&1; then
+    setsid nohup bash "$SELF_DIR/job-runner.sh" "$dir" >/dev/null 2>&1 &
+  else
+    nohup bash "$SELF_DIR/job-runner.sh" "$dir" >/dev/null 2>&1 &
+  fi
   echo $! > "$dir/pid"
   disown 2>/dev/null || true
   echo "$id"
@@ -78,21 +84,37 @@ cmd_result() {
   cat "$d/log" 2>/dev/null || true
 }
 
+# Kill a process and ALL of its descendants (children first), so a delegated CLI that
+# spawns its own subprocesses/workers does not survive a cancel as an orphan.
+kill_tree() {
+  local pid="$1" sig="${2:-TERM}" k kids
+  kids="$(pgrep -P "$pid" 2>/dev/null || true)"
+  for k in $kids; do kill_tree "$k" "$sig"; done
+  kill -"$sig" "$pid" 2>/dev/null || true
+}
+
 cmd_cancel() {
   local id="${1:-}"; [ -n "$id" ] || { echo "usage: jobs.sh cancel <job-id>" >&2; exit 2; }
   local d="$JOB_DIR/$id"; [ -d "$d" ] || { echo "no such job: $id" >&2; exit 1; }
   local pid; pid="$(cat "$d/pid" 2>/dev/null || true)"
-  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-    pkill -TERM -P "$pid" 2>/dev/null || true
-    kill -TERM "$pid" 2>/dev/null || true
-    sleep 1
-    pkill -KILL -P "$pid" 2>/dev/null || true
-    kill -KILL "$pid" 2>/dev/null || true
-    printf 'cancelled\n' > "$d/status"; printf '130\n' > "$d/exit"
-    echo "cancelled: $id"
-  else
+  if [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null; then
     echo "not running: $id"
+    return
   fi
+
+  # 1) If the job leads its own process group (started via setsid), signal the whole group.
+  kill -TERM "-$pid" 2>/dev/null || true
+  # 2) Always also walk the descendant tree — covers the no-setsid fallback and stragglers.
+  kill_tree "$pid" TERM
+
+  sleep 2
+  if kill -0 "$pid" 2>/dev/null; then
+    kill -KILL "-$pid" 2>/dev/null || true
+    kill_tree "$pid" KILL
+  fi
+
+  printf 'cancelled\n' > "$d/status"; printf '130\n' > "$d/exit"
+  echo "cancelled: $id"
 }
 
 cmd_clean() {
