@@ -32,6 +32,14 @@ SMOKE=1 SMOKE_CLIS=codex,pi bash tests/smoke/test-clis.sh   # subset
 | TC-J4 | unit/test-jobs.sh | `cancel` kills the **whole process tree** (nested children, no orphans) | `sleep 300 & sleep 300 & wait` → pgrep empty | offline |
 | TC-J5 | unit/test-jobs.sh | Multi-argument `start` prints a quoting-contract WARNING to stderr | capture stderr | offline |
 | TC-J6 | unit/test-jobs.sh | `clean` removes finished jobs, keeps running ones | state-dir listing | offline |
+| **TO timeout helper** | | | | |
+| TC-T1 | unit/test-to-helper.sh | The `TO` helper documented in SKILL.md runs a normal command and propagates exit 0 | extract from SKILL.md → run | offline |
+| TC-T2 | unit/test-to-helper.sh | `TO` times out with **124** (not 255 = perl syntax error) | `TO 1 sleep 5` | offline |
+| TC-T3 | unit/test-to-helper.sh | Child exit code is propagated (`exit 7` → 7) | `bash -c 'exit 7'` | offline |
+| TC-T4 | unit/test-to-helper.sh | Multi-word / quoted arguments survive the helper | `echo "two words"` | offline |
+| TC-T5 | unit/test-to-helper.sh | The documented **one-line** form also works (agents inline it) | grep one-liner → run | offline |
+| TC-T6 | unit/test-to-helper.sh | No `TO` definition in the repo is missing the `;` after `sub{}` | grep `exit 124}$` → 0 hits | offline |
+| TC-T7 | unit/test-to-helper.sh | The one-line form also times out with 124 | `TO 1 sleep 5` | offline |
 | **Live smoke (opt-in)** | | | | |
 | TC-S1..S7 | smoke/test-clis.sh | Each of the 7 supported CLIs runs its canonical one-shot recipe, exits 0, and its output contains `OK` | live run per CLI (60s cap) | tokens |
 | TC-S8 | smoke/test-clis.sh | `SMOKE_CLIS=<subset>` runs only the named CLIs | env filter | tokens |
@@ -44,4 +52,5 @@ SMOKE=1 SMOKE_CLIS=codex,pi bash tests/smoke/test-clis.sh   # subset
 | Wrong flags / recipes | TC-S* per CLI |
 | Process/state bugs (orphans, PATH, quoting) | TC-J3, TC-J4, TC-J5 |
 | Classifier regressions | TC-C1..C10 |
+| Timeout helper broken (every call exits 255) | TC-T1..T7 |
 | Docs drift (lists, versions, schema, frontmatter) | TC-M1..M10 |

@@ -1,6 +1,6 @@
 {
   "name": "cli-agents",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Headless-CLI delegation plugin for Claude Code (one-shot Bash, no app-server). Ships the cli-delegate subagent (preloads the cli-headless + delegation-result skills; routes a task to any installed CLI: claude, codex, agy, grok, pi, opencode, cline — more planned), the cli-headless skill (per-CLI reference folders with models, params mapping, guardrails, job control, parsing), the delegation-result skill (verbatim output + no-auto-fix contract), slash commands (/cli-agents:setup, delegate, review, status, result, cancel, models) that ask which CLI and whether to pick a model, one-shot Bash job control, a run-failure classifier, an optional opt-in Stop review gate, JSON schemas, and prompt templates.",
   "author": {
     "name": "Le Thanh"

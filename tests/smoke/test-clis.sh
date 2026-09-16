@@ -6,7 +6,13 @@ set -uo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 mkdir -p "$ROOT/tmp"
 P="Reply with exactly: OK"
-TO() { if command -v timeout >/dev/null 2>&1; then timeout "$1" "${@:2}"; else perl -e 'alarm shift; exec @ARGV or die' "$1" "${@:2}"; fi; }
+TO() { local s="$1"; shift;
+  if command -v timeout  >/dev/null 2>&1; then timeout  "$s" "$@"; return; fi
+  if command -v gtimeout >/dev/null 2>&1; then gtimeout "$s" "$@"; return; fi
+  perl -e 'my $t=shift; my $p=fork(); if(!$p){exec @ARGV; exit 127}
+           $SIG{ALRM}=sub{kill "TERM",$p; sleep 2; kill "KILL",$p; exit 124};
+           alarm $t; waitpid($p,0); exit($?>>8)' "$s" "$@"
+}
 PASS=0; FAIL=0
 run(){ # name logfile cmd...
   local name="$1" log="$2"; shift 2

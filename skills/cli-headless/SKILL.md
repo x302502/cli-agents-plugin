@@ -54,13 +54,25 @@ this helper at the top of any `Bash` call that runs a delegated CLI, then prefix
 with `TO <seconds>`:
 
 ```bash
-TO() { local s="$1"; shift
+TO() { local s="$1"; shift;
   if command -v timeout  >/dev/null 2>&1; then timeout  "$s" "$@"; return; fi
   if command -v gtimeout >/dev/null 2>&1; then gtimeout "$s" "$@"; return; fi
   perl -e 'my $t=shift; my $p=fork(); if(!$p){exec @ARGV; exit 127}
-           $SIG{ALRM}=sub{kill "TERM",$p; sleep 2; kill "KILL",$p; exit 124}
+           $SIG{ALRM}=sub{kill "TERM",$p; sleep 2; kill "KILL",$p; exit 124};
            alarm $t; waitpid($p,0); exit($?>>8)' "$s" "$@"
 }
+```
+
+> **The `;` after the `sub{...}` block is REQUIRED.** Perl does not treat the newline after a
+> block's closing brace as a statement terminator here, so without it the helper dies with
+> `syntax error near "alarm"` and **every** call exits `255`.
+
+If you need it on **one line** (e.g. inside a single `Bash` call), use this exact form — note
+the `;` after `shift`, after each `fi`, and after `"$@"`; dropping any of them is a bash
+syntax error:
+
+```bash
+TO() { local s="$1"; shift; if command -v timeout >/dev/null 2>&1; then timeout "$s" "$@"; return; fi; if command -v gtimeout >/dev/null 2>&1; then gtimeout "$s" "$@"; return; fi; perl -e 'my $t=shift; my $p=fork(); if(!$p){exec @ARGV; exit 127} $SIG{ALRM}=sub{kill "TERM",$p; sleep 2; kill "KILL",$p; exit 124}; alarm $t; waitpid($p,0); exit($?>>8)' "$s" "$@"; }
 ```
 
 - Each `Bash` call is a fresh shell — re-declare `TO` in every call that needs it.

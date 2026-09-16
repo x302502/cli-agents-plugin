@@ -15,11 +15,11 @@ CLI="${CLI_AGENTS_REVIEW_CLI:-codex}"
 command -v "$CLI" >/dev/null 2>&1 || exit 0
 [ "$CLI" = "codex" ] || exit 0   # gate implemented for codex only
 
-TO() { local s="$1"; shift
+TO() { local s="$1"; shift;
   if command -v timeout  >/dev/null 2>&1; then timeout  "$s" "$@"; return; fi
   if command -v gtimeout >/dev/null 2>&1; then gtimeout "$s" "$@"; return; fi
   perl -e 'my $t=shift; my $p=fork(); if(!$p){exec @ARGV; exit 127}
-           $SIG{ALRM}=sub{kill "TERM",$p; sleep 2; kill "KILL",$p; exit 124}
+           $SIG{ALRM}=sub{kill "TERM",$p; sleep 2; kill "KILL",$p; exit 124};
            alarm $t; waitpid($p,0); exit($?>>8)' "$s" "$@"
 }
 
