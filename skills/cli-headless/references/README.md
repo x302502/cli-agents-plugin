@@ -16,8 +16,9 @@ Each CLI has its own folder, `references/<binary>/`, containing:
 | `pi` | `pi/` | `pi -p` | fastest startup; micro-tasks; RPC |
 | `opencode` | `opencode/` | `opencode run` | client/server; ACP |
 | `cline` | `cline/` | `cline "<p>"` | headless by default; retries/timeout |
+| `omp` | `omp/` | `omp -p` | LSP/DAP aware; plan-yolo cost optimization |
 
-> More CLIs (amp, copilot, droid, kilo, mimo, omp, command-code, cursor-agent) are
+> More CLIs (amp, copilot, droid, kilo, mimo, command-code, cursor-agent) are
 > planned — they will be re-added one at a time as each passes a live smoke test. See the
 > plugin README ("Roadmap").
 

@@ -11,6 +11,8 @@
    - pi: NDJSON event stream — take the last assistant text:
      `jq -r 'select(.type=="message_end" and .message.role=="assistant") | .message.content[]? | select(.type=="text") | .text'`
      (pi's final `agent_settled` event carries no text).
+   - omp: same NDJSON schema as `pi` (`--mode json`) — reuse the `message_end` jq above;
+     cost is at `.message.usage.cost.total`, tokens at `.message.usage.totalTokens`.
    - opencode: tail the `session_complete` / result event line.
    - agy / grok / cline: parse the `--output-format json` / `--json` payload with `jq`;
      for free text, read the rendered message directly.

@@ -42,7 +42,7 @@ for f in glob.glob(root+'/**/*.md',recursive=True):
 PY
 
 # TC-M6 supported-CLI list consistent across the 4 canonical places
-EXPECT="agy claude cline codex grok opencode pi"
+EXPECT="agy claude cline codex grok omp opencode pi"
 got=$(bash scripts/check-setup.sh | tail -n +3 | awk '{print $1}' | sort | tr '\n' ' ' | sed 's/ $//')
 [ "$got" = "$EXPECT" ] && ok || bad "check-setup list: got [$got] want [$EXPECT]"
 agent_loop=$(grep -o 'for c in [a-z -]*; do' agents/cli-delegate.md | sed 's/for c in //;s/; do//')

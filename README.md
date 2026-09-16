@@ -11,7 +11,7 @@ It ships 1 agent · 2 skills · 7 commands · 1 optional hook · schemas + promp
 
 - **`cli-delegate`** (agent) — thin orchestrator. Preloads the `cli-headless` and
   `delegation-result` skills; routes a task to any installed CLI among `agy`, `claude`, `cline`,
-  `codex`, `grok`, `opencode`, `pi` (more planned — see [Roadmap](#roadmap));
+  `codex`, `grok`, `omp`, `opencode`, `pi` (more planned — see [Roadmap](#roadmap));
   returns a structured report to main.
 - **`cli-headless`** (skill, internal) — the invocation contract: a lean `SKILL.md` plus a
   `references/` library (per-CLI folders + params mapping, job control, guardrails, parsing).
@@ -170,7 +170,7 @@ Typical flow:
 `cli-delegate` uses whichever of these are installed — check with `command -v <name>`:
 
 ```bash
-for c in agy claude cline codex grok opencode pi; do
+for c in agy claude cline codex grok omp opencode pi; do
   printf '%-14s' "$c"; command -v "$c" >/dev/null 2>&1 && echo OK || echo MISSING
 done
 ```
@@ -237,6 +237,7 @@ The user's explicit choice always wins. Otherwise `cli-delegate` picks by task s
 | Strongest reasoning / cross-file correctness | `claude`, `codex` |
 | Fast, cheap, read-only review / docs / micro-fix | `pi`, `cline` |
 | Huge-context scan (1M+) | `agy` |
+| LSP/type-aware work on a large codebase; plan then cheap execute | `omp` |
 | Sandboxed file work | `codex -s workspace-write` |
 | Isolated git worktree | `grok -w` |
 | Second opinion from another vendor | any CLI from a different family than the host |
@@ -319,6 +320,7 @@ Pass `--read-only` to force a read-only run (review flows are always read-only).
 | `pi` | `pi -p` | auto in `-p` | `--mode json` |
 | `opencode` | `opencode run` | `--auto` | `--format json` |
 | `cline` | `cline "<prompt>"` | on by default | `--json` |
+| `omp` | `omp -p` | `--auto-approve` / `--approval-mode yolo` | `--mode json` |
 
 ## Tests
 
@@ -337,15 +339,15 @@ smoke suite proves each supported CLI actually answers end-to-end.
 
 ## Roadmap
 
-The plugin ships with the **7 CLIs that passed a live smoke test** on the reference machine
+The plugin ships with the **8 CLIs that passed a live smoke test** on the reference machine
 (prompt *"Reply with exactly: OK"*, read-only recipe, exit 0, output verified):
-`codex` (8s) · `claude` (5s) · `cline` (4s) · `grok` (6s) · `pi` (7s) · `opencode` (7s) · `agy` (37s).
+`codex` (8s) · `claude` (5s) · `cline` (4s) · `omp` (4s) · `grok` (6s) · `pi` (7s) · `opencode` (7s) · `agy` (37s).
 
 More CLIs will be re-added **one at a time**, each only after it passes the same smoke test:
 
 | CLI | Status | Note |
 | --- | --- | --- |
-| `amp`, `copilot`, `droid`, `kilo`, `mimo`, `omp`, `command-code`, `cursor-agent` | planned | reference data recoverable from git history |
+| `amp`, `copilot`, `droid`, `kilo`, `mimo`, `command-code`, `cursor-agent` | planned | reference data recoverable from git history |
 
 **Restoring removed reference data:** every removed per-CLI folder (`README.md` + `models.md`)
 is preserved in git history. Restore all of them with:

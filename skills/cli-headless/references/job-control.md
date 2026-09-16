@@ -38,5 +38,6 @@ Some CLIs can continue a previous run, which saves tokens on follow-ups:
 | `pi` | `-c` / `--continue`, `-r` / `--resume` |
 | `grok` | `-c` / `--continue` |
 | `cline` | `--id <session-id>` |
+| `omp` | `-c` / `--continue`, `-r` / `--resume <id>` |
 
 For CLIs not listed, check `<cli> --help` for a continue/resume/session flag.

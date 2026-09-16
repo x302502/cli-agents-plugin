@@ -1,6 +1,6 @@
 ---
 description: Show recommended model tiers and the full provider/model list for a CLI
-argument-hint: "<cli>  (e.g. codex, cline, agy)"
+argument-hint: "<cli>  (e.g. codex, cline, omp, agy)"
 allowed-tools: Bash, Read, Glob
 ---
 

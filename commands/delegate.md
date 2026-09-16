@@ -12,7 +12,7 @@ $ARGUMENTS
 ## 1. Resolve the CLI — ASK if it is missing
 
 A CLI is "given" only if `$ARGUMENTS` starts with a known binary name
-(`agy|claude|cline|codex|grok|opencode|pi`)
+(`agy|claude|cline|codex|grok|omp|opencode|pi`)
 or contains `--cli <name>`.
 
 If no CLI is given, do NOT guess and do NOT delegate yet:

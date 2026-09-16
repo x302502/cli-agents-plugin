@@ -21,7 +21,7 @@ run(){ # name logfile cmd...
   if [ $rc -eq 0 ] && grep -q 'OK' "$log"; then PASS=$((PASS+1)); echo "PASS  $name (rc=$rc)";
   else FAIL=$((FAIL+1)); echo "FAIL  $name (rc=$rc)"; tail -n 6 "$log" | cut -c1-160; fi
 }
-ALL=${SMOKE_CLIS:-agy claude cline codex grok opencode pi}
+ALL=${SMOKE_CLIS:-agy claude cline codex grok omp opencode pi}
 echo "=== CLI smoke ($(date -u +%H:%M:%S), CLIs: $ALL) ==="
 for c in $ALL; do
   case "$c" in
@@ -32,6 +32,7 @@ for c in $ALL; do
     pi)       run pi       "$ROOT/tmp/smoke-pi.log"       TO 60 pi -p "$P" --mode json --no-session --no-context-files --tools read,grep,find,ls ;;
     opencode) run opencode "$ROOT/tmp/smoke-opencode.log" TO 60 opencode run "$P" --pure --auto --format json ;;
     cline)    run cline    "$ROOT/tmp/smoke-cline.log"    TO 60 cline "$P" --json --timeout 50 ;;
+    omp)      run omp      "$ROOT/tmp/smoke-omp.log"      TO 90 omp -p "$P" --no-session --no-lsp --no-pty --mode json --tools read,grep,glob ;;
     *) echo "SKIP  $c (unsupported)";;
   esac
 done

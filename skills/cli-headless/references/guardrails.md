@@ -31,7 +31,7 @@ report the exact files it changed.
    `mcp__*` (as supported). Auto-approve only what the task needs.
 3. **Economics & Limits:** always set a timeout (`TO <secs>`) and, where supported,
    `--max-budget-usd` (claude), `--max-turns` (claude, grok), `--timeout`
-   (cline). Keep default budget <= $1.50 and turns <= 20.
+   (cline), `--max-time` (omp). Keep default budget <= $1.50 and turns <= 20.
 4. **Structured I/O:** prefer `json` / `stream-json` / `--output-format json` / `--json`
    over free text, and always check **both** the exit code and the parsed payload.
 

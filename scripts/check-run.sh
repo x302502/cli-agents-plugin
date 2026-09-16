@@ -21,7 +21,7 @@ empty() { ! grep -q '[^[:space:]]' "$log" 2>/dev/null; }
 type=""; fix=""
 if [ "$code" = "124" ]; then
   type="TIMEOUT";        fix="Raise the timeout or narrow the scope; or use a faster CLI."
-elif [ "$code" = "127" ] || have 'command not found|no such file or directory: .*(codex|claude|agy|grok|opencode|cline|pi)'; then
+elif [ "$code" = "127" ] || have 'command not found|no such file or directory: .*(codex|claude|agy|grok|omp|opencode|cline|pi)'; then
   type="CLI_MISSING";    fix="CLI not installed. Pick another CLI or install it."
 elif have 'not authenticated|unauthenticated|unauthorized|401|invalid api key|no api key|please (log ?in|sign ?in)|authentication required|api key not set'; then
   type="AUTH";           fix="Authenticate the CLI (e.g. codex login, agent login, or run it once interactively) and retry."

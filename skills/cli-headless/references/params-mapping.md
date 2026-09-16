@@ -3,7 +3,7 @@
 Translate a generic intent into the right flag for each CLI. Combine with the per-CLI folders
 (`references/<binary>/`, indexed in `references/README.md`). Values were verified against
 the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `grok`, `pi`,
-`opencode`, `cline` (more planned — see the README roadmap).
+`opencode`, `cline`, `omp` (more planned — see the README roadmap).
 
 ## 1. One-shot / non-interactive (required for every delegation)
 
@@ -16,6 +16,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `pi` | `-p`, `--print` |
 | `opencode` | `opencode run` |
 | `cline` | `cline "<prompt>"` (default) |
+| `omp` | `-p`, `--print` |
 
 ## 2. Auto-approve / permissions
 
@@ -28,6 +29,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `pi` | automatic in `-p` | deny shell with `--exclude-tools bash` |
 | `opencode` | `--auto` | |
 | `cline` | `--auto-approve true` (default) | |
+| `omp` | `--auto-approve` / `--approval-mode yolo` | read-only: omit it and pin `--tools read,grep,glob` |
 
 ## 3. Structured output (machine-parseable)
 
@@ -40,6 +42,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `pi` | `--mode json` (NDJSON) |
 | `opencode` | `--format json` |
 | `cline` | `--json` |
+| `omp` | `--mode json` (NDJSON, same schema as `pi`) |
 
 ## 4. JSON-schema enforcement
 
@@ -50,7 +53,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `agy` | `--json-schema <schema\|file>` |
 | `grok` | `--json-schema <schema>` (implies json) |
 
-`pi`, `opencode`, `cline` have **no native schema flag** — enforce via the prompt:
+`pi`, `omp`, `opencode`, `cline` have **no native schema flag** — enforce via the prompt:
 *"Return JSON matching this schema exactly; add no prose or markdown fences."*
 
 ## 5. Cost / turn / time limits
@@ -63,6 +66,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `agy` | `--print-timeout <3m>` | print-mode timeout |
 | `cline` | `-t, --timeout <s>` | process timeout |
 | `cline` | `--retries <n>` | max consecutive-error retries |
+| `omp` | `--max-time <600\|10m\|1h>` | session wall-clock cap (no USD/turn cap) |
 | all | OS-level timeout via the `TO` helper | universal backstop (`exit 124`) |
 
 ## 6. Session / ephemeral (keep CI clean)
@@ -72,6 +76,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `claude` | `--no-session-persistence` |
 | `codex` | `--ephemeral` |
 | `pi` | `--no-session` |
+| `omp` | `--no-session` |
 | `opencode` | auto (per UUID) |
 | `cline` | auto cleanup |
 | `agy` / `grok` | check `<cli> --help` for a session flag |
@@ -85,6 +90,7 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `codex` | `-s workspace-write` (policy) | `-s read-only` (policy) |
 | `pi` | `--tools read,grep,find,ls` | `--exclude-tools bash` |
 | `grok` | `--allow "RULE"` | `--deny "Bash(rm *)"` |
+| `omp` | `--tools read,grep,glob,write` | `--no-tools` (disable all built-ins) |
 
 ## 8. Isolated git worktree (safe write mode)
 
@@ -104,13 +110,14 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | `pi` | `--model` |
 | `opencode` | `-m <provider/model>` |
 | `cline` | `-m, --model` (+ `-P --provider`) |
+| `omp` | `--model <fuzzy>` (role flags `--smol` / `--slow` / `--plan`; `--provider` is legacy) |
 
 ## 10. Server / ACP daemon
 
 | CLI | Daemon | Client attach |
 |---|---|---|
 | `opencode` | `opencode serve --port <p> --hostname 0.0.0.0` | `opencode run --attach <url>` |
-| ACP server | `opencode acp`, `cline --acp`, `agy remote-control`, `codex app-server` | — |
+| ACP server | `opencode acp`, `omp acp`, `cline --acp`, `agy remote-control`, `codex app-server` | — |
 
 ## 11. Recommended presets by scenario
 
@@ -122,6 +129,8 @@ the installed binaries' `--help`. Supported CLIs: `claude`, `codex`, `agy`, `gro
 | Fast micro-fix | `pi -p --mode json --no-session --tools read,edit,write` |
 | Guarded auto-fix | `cline "<task>" --json --timeout 240` (auto-approve default) |
 | Repo work in an isolated worktree | `grok -p -w <name> --permission-mode dontAsk` |
+| Cost-optimized plan then cheap execute | `omp -p --plan-yolo --plan-yolo-into claude-haiku --mode json --no-session` |
+| LSP/type-aware edit on a large codebase | `omp -p --mode json --no-session --auto-approve` |
 
 ## 12. Recommended models by CLI (summary)
 
@@ -137,6 +146,7 @@ each `references/<binary>/models.md`.
 | `pi` | `claude-haiku-4.5` / `gpt-5.4-mini` | `claude-sonnet-5` | `claude-opus-5` | `pi --list-models` |
 | `opencode` | `opencode/mimo-v2.5-free` | provider `.../sonnet` | provider `.../opus` | `opencode models` |
 | `cline` | a `-mini` variant | provider default | newest flagship | `-m` + `-P` |
+| `omp` | `claude-haiku-4.5` (`--smol`) | `claude-sonnet-5` (`--model`) | `claude-opus-5` (`--slow`) | `omp models` |
 
 **Rule of thumb:** pick the cheapest tier that passes; escalate only for security /
 high-risk work or hard cross-file reasoning. Pin the model in CI for reproducibility.
