@@ -37,7 +37,9 @@ report the exact files it changed.
 
 ### Write-Mode Guardrails
 
-- **Default to read-only.** Only enable edits when the parent/user explicitly authorizes them.
+- **Default to auto-write (guarded).** Delegation exists to get work done: enable edits +
+  the CLI's auto-approve so it can complete the task and report. Drop to read-only only when
+  the parent passes `--read-only` or for review flows.
 - Prefer running write tasks in an **isolated git worktree** via the CLI's own flag
   (`grok -w`) when available.
 - Never allow a delegated CLI to push to `main` or force-push.

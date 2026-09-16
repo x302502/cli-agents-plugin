@@ -31,7 +31,7 @@ Keep this file lean. The detail lives in `references/` and is read on demand:
 3. Read `references/<binary>/README.md` and pick a model from
    `references/<binary>/models.md` (tiers + full provider/model-id list) unless the parent
    pinned one.
-4. Apply `references/guardrails.md`: 4-pillar limits, read-only default, timeout.
+4. Apply `references/guardrails.md`: 4-pillar limits, auto-write default (guarded), timeout.
 5. Run it: foreground with the `TO` helper (below) for short tasks, or detached via
    `scripts/jobs.sh start` (see `references/job-control.md`) for long ones. Parse per
    `references/io-and-errors.md` and return its `## CLI delegation report` schema.
@@ -71,5 +71,6 @@ TO() { local s="$1"; shift
 
 - Always non-interactive (`-p` / `exec` / `run` / `-x` / bare `cline`); redirect stderr.
 - Always set a timeout; add budget/turn caps where the CLI supports them.
-- Read-only unless the parent authorizes writes; never push to `main`; never force-push.
+- Auto-write by default so the CLI completes the task and reports files changed; read-only
+  when the parent passes `--read-only`; never push to `main`; never force-push.
 - Prefer `json` / `stream-json`; always check **both** the exit code and the parsed payload.

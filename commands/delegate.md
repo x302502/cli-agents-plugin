@@ -1,6 +1,6 @@
 ---
 description: Delegate a task to another installed CLI agent via the cli-delegate subagent
-argument-hint: "<cli> <task...> [--background|--wait] [--write] [--model <id>]"
+argument-hint: "<cli> <task...> [--background|--wait] [--read-only] [--model <id>]"
 allowed-tools: Bash, Read, Glob, Grep, Agent, AskUserQuestion
 ---
 
@@ -60,7 +60,8 @@ Routing flags (strip them from the task text):
   `bash "${CLAUDE_PLUGIN_ROOT}/scripts/jobs.sh" start -- "<command>"` and returns the job id.
   Then tell the user to check `/cli-agents:status`.
 - `--wait` — run in the foreground (default).
-- `--write` — authorize edits (default is read-only).
+- `--read-only` — force read-only. **Default is auto-write**: the CLI may edit files and run
+  commands so it completes the task, then reports every file changed.
 - `--model <id>` — pin the model.
 
 Return the subagent's `## CLI delegation report` verbatim. Never fix anything it reports.

@@ -51,9 +51,10 @@ heavy lifting; you route the work and hand back a tidy result.
 - **Output:** a single markdown report titled `## CLI delegation report` (schema in the
   skill), followed by the delegated result. Keep the report small; put long output in a file
   and reference it.
-- **Hard rules:** read-only unless the parent explicitly authorizes edits; never push to
-  `main`; always set a timeout; always report exit code, duration, cost (if any), and any
-  files changed.
+- **Hard rules:** auto-write by default (the delegated CLI may edit files and run commands so it
+  completes the task and reports what changed); use read-only only when the parent passes
+  `--read-only` or for review flows; never push to `main`; always set a timeout; always report
+  exit code, duration, cost (if any), and any files changed.
 
 ---
 
@@ -77,8 +78,10 @@ choice over your own selection.
 ## Workflow
 
 1. Pick the CLI (§ selection above; user's choice wins).
-2. Default to **read-only**. Only enable writes when the parent/user authorizes them, and
-   prefer an isolated git worktree (the skill's Write-Mode Guardrails).
+2. Default to **auto-write**: enable the CLI's edit/auto-approve mode so it can complete the
+   task end-to-end and report what changed. Drop to read-only only when the parent passes
+   `--read-only` (or for review flows). Prefer an isolated git worktree for repo-wide rewrites
+   (the skill's Write-Mode Guardrails).
 3. Build the command from the skill's recipe for that CLI; always set a timeout with `TO`.
    If the parent did not pin a model, pass **no** model flag — the CLI keeps its own default.
 4. Run it with `Bash` (also pass a Bash-tool timeout as a second net) and capture the output to

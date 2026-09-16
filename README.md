@@ -79,7 +79,7 @@ agent reads only the CLI it is about to invoke.
 | Command | What it does |
 |---|---|
 | `/cli-agents:setup` | Report which CLIs are installed + auth hints |
-| `/cli-agents:delegate <cli> <task>` | Delegate via the `cli-delegate` subagent (`--background`, `--write`, `--model`) |
+| `/cli-agents:delegate <cli> <task>` | Delegate via the `cli-delegate` subagent (`--background`, `--read-only`, `--model`) |
 | `/cli-agents:review` | Read-only review (`--cli`, `--base`, `--adversarial`, `--background`) |
 | `/cli-agents:status [job-id]` | List background jobs, or show one |
 | `/cli-agents:result <job-id>` | Full log + status of a job |
@@ -304,8 +304,9 @@ Return a markdown table with file, risk, severity, and suggested fix.
    (`--max-turns`) where supported.
 4. **Structured I/O** — prefer JSON / stream-json output and check exit code **and** payload.
 
-For write tasks the agent defaults to read-only unless authorized, prefers an isolated git
-worktree, and never pushes to `main`.
+For write tasks the agent defaults to **auto-write** (the CLI edits files and reports what
+changed), prefers an isolated git worktree for repo-wide rewrites, and never pushes to `main`.
+Pass `--read-only` to force a read-only run (review flows are always read-only).
 
 ## Headless CLI quick reference
 
@@ -318,6 +319,21 @@ worktree, and never pushes to `main`.
 | `pi` | `pi -p` | auto in `-p` | `--mode json` |
 | `opencode` | `opencode run` | `--auto` | `--format json` |
 | `cline` | `cline "<prompt>"` | on by default | `--json` |
+
+## Tests
+
+A real test suite ships with the plugin (see [`tests/README.md`](tests/README.md) for the
+full test-case matrix):
+
+```bash
+bash tests/run-all.sh                   # unit suites: manifests, classifier, job control (offline)
+SMOKE=1 bash tests/run-all.sh           # + live per-CLI smoke
+SMOKE=1 SMOKE_CLIS=codex,pi bash tests/smoke/test-clis.sh   # subset
+```
+
+Unit suites catch docs drift (versions, CLI lists, schemas, frontmatter), classifier
+regressions, and job-control bugs (process-tree cancel, PATH snapshot, quoting). The opt-in
+smoke suite proves each supported CLI actually answers end-to-end.
 
 ## Roadmap
 
